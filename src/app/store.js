@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import draggableReducer from '../features/draggable/draggableSlice';
 
 export default configureStore({
   reducer: {
-    counter: counterReducer,
+    draggable: draggableReducer,
   },
 });
