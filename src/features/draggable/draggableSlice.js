@@ -39,25 +39,20 @@ export const draggableSlice = createSlice({
 
       state.picked = { listId, item };
     },
+
+    changeList: (state, action) => {
+      const { listToDropId, itemToDropId } = action.payload;
+
+      const list = state.items.find((list) => list.id === listToDropId);
+      const itemIndex = list.items.findIndex((item) => item === itemToDropId);
+
+      const head = list.items.slice(0, itemIndex);
+      const tail = list.items.slice(itemIndex, list.items.length);
+
+      list.items = [...head, state.picked.item, ...tail];
+    },
   },
 });
-
-export const moveItem = (listToDropId) => (dispatch, getState) => {
-  const state = getState();
-
-  const { item, listId } = state.draggable.picked;
-
-  const listToDrop = state.draggable.items.find(
-    (list) => list.id === listToDropId
-  );
-
-  if (!listToDrop.items.includes(item)) {
-    dispatch(addItem({ listId: listToDropId, item }));
-    dispatch(removeItem({ listId, id: item }));
-  }
-
-  dispatch(setPicked({}));
-};
 
 export const {
   addList,
@@ -65,7 +60,22 @@ export const {
   addItem,
   removeItem,
   setPicked,
+  changeList,
 } = draggableSlice.actions;
+
+export const moveItem = ({ listToDropId, itemToDropId }) => (
+  dispatch,
+  getState
+) => {
+  const state = getState();
+
+  const { item, listId } = state.draggable.picked;
+
+  dispatch(removeItem({ listId, id: item }));
+  dispatch(changeList({ listToDropId, itemToDropId }));
+
+  dispatch(setPicked({}));
+};
 
 export const selectItems = (state) => state.draggable.items;
 

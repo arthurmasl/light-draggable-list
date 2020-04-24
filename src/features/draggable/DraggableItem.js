@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import { useDispatch } from 'react-redux';
-import { removeItem, setPicked } from './draggableSlice';
+import { removeItem, setPicked, moveItem } from './draggableSlice';
 
 const DraggableItem = ({ item, listId }) => {
   const dispatch = useDispatch();
@@ -12,11 +12,20 @@ const DraggableItem = ({ item, listId }) => {
     dispatch(setPicked({ listId, item }));
   };
 
+  const allowDrop = (e) => {
+    e.preventDefault();
+  };
+
+  const dropHandler = () =>
+    dispatch(moveItem({ listToDropId: listId, itemToDropId: item }));
+
   return (
     <div
       className="draggable list-group-item"
       draggable
       onDragStart={dragHandler}
+      onDragOver={allowDrop}
+      onDrop={dropHandler}
     >
       {item}
       <button className="btn btn-danger" onClick={removeItemHandler}>
